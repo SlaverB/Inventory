@@ -1,0 +1,132 @@
+﻿using Base;
+using DG.Tweening;
+using System;
+
+namespace UI
+{
+    public class MenuHudMediator : BaseWindowMediator<MenuHudView, WindowData> // міняє вьюху. решта в менеджері
+    {
+        public override void Mediate(BaseWindowView value, GameManagersContexts gameManagersContexts)
+        {
+            base.Mediate(value, gameManagersContexts);
+<<<<<<< HEAD
+            Target.ButtonSkills.onClick.AddListener(() => { OpenWindow(WindowType.SkillsWindow);});
+            Target.ButtonShop.onClick.AddListener(() => {OpenWindow(WindowType.ShopWindow); });
+            Target.ButtonAddMoney.onClick.AddListener(() => {OpenWindow(WindowType.NoEnoughMoneyPopup);});
+            Target.ButtonSkillsOnXP.onClick.AddListener(() => {OpenWindow(WindowType.SkillsWindow); });
+            Target.ButtonSkillsOnCurrentAmount.onClick.AddListener(() => {OpenWindow(WindowType.SkillsWindow);});
+            Target.ButtonUpgradeXP.onClick.AddListener(UpgradeXp);
+
+            _managersContexts.UserProfileManager.OnUserLevelChanged += ChangeTextCurrentUserLevel;
+            _managersContexts.UserProfileManager.OnUserSkillsChanged += UpdateSkillCount;
+            _managersContexts.UserProfileManager.OnUserMoneyChanged += UpdateMoneyCount;
+=======
+            Target.ButtonSkills.onClick.AddListener(() => { OpenWindow(WindowType.SkillsPopup); });
+            Target.ButtonShop.onClick.AddListener(() => { OpenWindow(WindowType.ShopWindow); });
+            Target.ButtonAddMoney.onClick.AddListener(() => { OpenWindow(WindowType.NoEnoughMoneyPopup); });
+            Target.ButtonSkillsOnXP.onClick.AddListener(() => { OpenWindow(WindowType.SkillsPopup); });
+            Target.ButtonSkillsOnCurrentAmount.onClick.AddListener(() => { OpenWindow(WindowType.SkillsPopup); });
+            Target.ButtonUpgradeXP.onClick.AddListener(UpgradeXP);
+            _managersContexts.UserProfileManager.UserLevelChanged += ChangeTextCurrentUserLevel;
+            _managersContexts.UserProfileManager.UserSkillsChanged += 
+                () =>
+                {
+                    ChangeTextValue(Target.TextSkillsCount, _managersContexts.UserProfileManager.UserSkills.ToString());
+                };
+            _managersContexts.UserProfileManager.UserMoneyChanged += 
+                () =>
+                {
+                    ChangeTextValue(Target.TextSkillsCount, _managersContexts.UserProfileManager.UserMoney.ToString());
+                };
+>>>>>>> 3223e22... create skill popup
+        }
+
+        public override void UnMediate()
+        {
+            base.UnMediate();
+<<<<<<< HEAD
+            Target.ButtonSkills.onClick.RemoveListener(() => {OpenWindow(WindowType.SkillsWindow);});
+            Target.ButtonShop.onClick.RemoveListener(() => {OpenWindow(WindowType.ShopWindow);});
+            Target.ButtonShop.onClick.RemoveListener(() => {OpenWindow(WindowType.NoEnoughMoneyPopup);});
+            Target.ButtonSkillsOnXP.onClick.RemoveListener(() => {OpenWindow(WindowType.SkillsWindow);});
+            Target.ButtonSkillsOnCurrentAmount.onClick.RemoveListener(() => {OpenWindow(WindowType.SkillsWindow);});
+
+            _managersContexts.UserProfileManager.OnUserLevelChanged -= ChangeTextCurrentUserLevel;
+            _managersContexts.UserProfileManager.OnUserSkillsChanged -= UpdateSkillCount;
+            _managersContexts.UserProfileManager.OnUserMoneyChanged -= UpdateMoneyCount;
+=======
+            Target.ButtonSkills.onClick.RemoveListener(() => { OpenWindow(WindowType.SkillsPopup); });
+            Target.ButtonShop.onClick.RemoveListener(() => { OpenWindow(WindowType.ShopWindow); });
+            Target.ButtonShop.onClick.RemoveListener(() => { OpenWindow(WindowType.NoEnoughMoneyPopup); });
+            Target.ButtonSkillsOnXP.onClick.RemoveListener(() => { OpenWindow(WindowType.SkillsPopup); });
+            Target.ButtonSkillsOnCurrentAmount.onClick.RemoveListener(() => { OpenWindow(WindowType.SkillsPopup); });
+            _managersContexts.UserProfileManager.UserLevelChanged -= ChangeTextCurrentUserLevel;
+            _managersContexts.UserProfileManager.UserSkillsChanged -=
+                () =>
+                {
+                    ChangeTextValue(Target.TextSkillsCount, _managersContexts.UserProfileManager.UserSkills.ToString());
+                };
+            _managersContexts.UserProfileManager.UserMoneyChanged -=
+                () =>
+                {
+                    ChangeTextValue(Target.TextSkillsCount, _managersContexts.UserProfileManager.UserMoney.ToString());
+                };
+>>>>>>> 3223e22... create skill popup
+        }
+
+        protected override void ShowStart()
+        {
+            base.ShowStart();
+            UpdateSkillCount();
+            UpdateMoneyCount();
+            ChangeAmountCurrentXp();
+            ChangeTextCurrentUserLevel();
+        }
+
+        private void UpdateSkillCount()
+        {
+            Target.TextSkillsCount.text = _managersContexts.UserProfileManager.UserSkills.ToString();
+        }
+
+        private void UpdateMoneyCount()
+        {
+            Target.TextMoneyValue.text = _managersContexts.UserProfileManager.UserMoney.ToString();
+        }
+
+
+        private void ChangeTextCurrentUserLevel()
+        {
+            Target.TextCurrentUserLevel.text = "Lv." + _managersContexts.UserProfileManager.UserLevel;
+        }
+
+        private void ChangeAmountCurrentXp()
+        {
+            float amount = (float)(_managersContexts.UserProfileManager.UserXp - PlayerLevelsDescription.LevelLabel) / PlayerLevelsDescription.LevelLength;
+
+            float duration = 1f;
+
+            if (!float.IsNaN(amount))
+            {
+                Target.ImageCurrentXPFillAmount.DOFillAmount((float)Math.Round(amount, 2), duration);
+            }
+            else
+            {
+                Target.ImageCurrentXPFillAmount.DOFillAmount(0f, duration);
+            }
+        }
+
+        private void UpgradeXp()
+        {
+            _managersContexts.UserProfileManager.ChangeUserXP(50);
+            ChangeAmountCurrentXp();
+        }
+
+        private void OpenWindow(WindowType windowType)
+        {
+            _managersContexts.WindowsManager.Open(windowType);
+        }
+
+
+
+    }
+}
